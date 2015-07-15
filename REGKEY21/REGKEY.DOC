@@ -1,0 +1,282 @@
+
+
+
+
+
+
+
+                   REGISTRATION KEY SYSTEM FOR PROGRAMMERS
+                                 Version 2.10
+
+
+           (C) Copyright 1992, Brian Pirie. All Rights Reserved.
+
+
+
+
+
+
+
+    You are granted permission to use an unmodified version of this code
+    in any program, so long as your program's documentation acknowledges
+    the use of this code. There is no charge for the use of this
+    software.
+
+
+
+
+    This brief document describes the accompanying files which can be
+    used to easily implement a registration key system in any programs
+    which you have written. I would encourage you to read this entire
+    file, prior to attempting to use this system - there is some very
+    important information contained withing, that may not seem obvious
+    prior to reading this document.
+
+    First of all, if you are currently using the REGKEY10.* library,
+    please note that the new versions 2.00 and later is NOT an upgrade
+    from the previous version, but a re-written algorithm. This means
+    that the new package will produce different registration key values
+    than the old one. Therefore, if you are using REGKEY10 in any of
+    your programs, you should not try to recompile the same program
+    using this new package.
+
+    As of version 2.10, the registration key systems should be
+    compatible with any compiler that supports the MicroSoft .OBJect
+    code format. While all of the example programs included with this
+    package are in C, the package should be compatible with any
+    language, including Pascal, BASIC and Assembly language, which
+    supports the C function calling convention. The registration key
+    system should be compatible with Turbo C(++), Borland C++, MicroSoft
+    Quick C, MicroSoft C(++), Turbo Pascal, QuickBASIC, Visual BASIC,
+    and many other compilers.
+
+    Using this registration key system, you can easily and quickly
+    generate and verify the validity of numerical registration keys that
+    correspond to a person who has purchased your program. Thus, when
+    someone who already has a shareware or demo version of your program
+    wishes to purchase the program, you need only send them a simple
+    registration key number, instead of sending an entire registered
+    version. You can simply use this package to generate a unique
+    registration key number which corresponds to the user's name (or any
+    other string you wish to use). The user will then be able to enter
+    this number into your software's configuration file / configuration
+    program. When your program begins, it will be able to read this
+    number from the configuration file, and again using this package,
+    determine whether it is a valid registration key corresponding to
+    the user's name. If the registration key is valid, your program can
+    switch into "registered mode", and if not, can run in its
+    unregistered "demo" mode.
+
+    Unlike other registration key algorithms, this package can be used
+    over and over, by many different programs and programmers. Each
+    program written to use this package simply provides the registration
+    algorithm with its own unique numerical security code. This way, the
+    registration key for a user named "Brian Pirie" might be 4042871256
+    for one program, while the registration key for "Brian Pirie" could
+    be 1732396345 for another program.
+
+    Below are detailed instructions for the use of the registration key
+    system in C programs. If you wish to use this package with any other
+    language, you should still read the rest of this manual. However,
+    you will probably also have to refer to other books / manuals for
+    instructions on calling C functions from withing whatever language
+    you are using.
+
+    In order to make use of this registration key system in your
+    program, you must take a few simple steps when writing and compiling
+    your program:
+
+    1.) First of all, you must include the "BP.H" header file in your
+        program. This can be accomplished by adding the line:
+
+               #include "bp.h"
+
+        at the beginning of your program.
+
+    2.) Secondly, you must instruct your C compiler to link your program
+        with the appropriate BP?.LIB. The library you use should
+        correspond to the same memory model you use to compile your
+        program. The memory models and their corresponding library files
+        are listed below:
+
+                BPT.LIB - Tiny Memory Model
+                BPS.LIB - Small Memory Model
+                BPC.LIB - Compact Memory Model
+                BPM.LIB - Medium Memory Model
+                BPL.LIB - Large Memory Model
+                BPH.LIB - Huge Memory Model
+
+        In order to have your program linked with one of these
+        libraries, you can create a makefile or project file, which
+        lists the name of your program's source code file(s), along with
+        the filename of the appropriate libary. For more information on
+        doing this, refer to the manuals which came with your compiler.
+
+    You will now be able to make use of the registration key function.
+    This function's prototype is listed below:
+
+      unsigned long bp(char *registration_string, unsigned int security_code);
+
+    As you can see, this function accepts two parameters. The first
+    parameter, registration_string, is a pointer to the string which
+    should be used to generate the registration key. This will usually
+    be the name of the person who has registered (purchased) your
+    program. The second parameter, security_code, should be a number
+    between 0 and 65,535, which should be a unique value for any given
+    program you have written. It is this parameter that makes a user's
+    registration key unique for your program, and which prevents other
+    people who may have this package from producing registration keys
+    for use with your program. The bp() function will return the
+    registration key corresponding to the registration string and
+    security code, as an unsigned long integer. In your registration key
+    GENERATION PROGRAM, this is the value which you will display, in
+    order to send to the registered user. In the ACTUAL PROGRAM that the
+    user is registering, you will compare this value with the value
+    supplied by the user in your configuration file / configuration
+    program. If and only if these values match, your program should then
+    operate in "registered" mode.
+
+    You can also make use of the included MAKEKEY program to generate
+    registration keys to send to registered users. Run this program by
+    simply typing MAKEKEY from the DOS prompt. You will then be prompted
+    to enter the unique security code used by your program, and the name
+    of the user who has registered. This program will then display the
+    registration key corresponding to the supplied registration string
+    (user's name). Again, remember that it is the security code which
+    prevents other people from creating registration keys for use with
+    your program, and as such, it is important that you keep your
+    program's security code confedential.
+
+    When using this registration key system, be careful not to accept
+    registration strings (ie, the user's name) which are empty. The
+    registration system will always return the same value for an empty
+    string. Thus, you should check the length of the name the user has
+    entered, and if it is 0, automatically assume that the user is not
+    registered, and do not call the bp() function at all.
+
+    The source code to the MAKEKEY program is included in the file
+    MAKEKEY.C. Feel free to alter this makekey program in any way you
+    wish. For example, you may want to create a custom version of the
+    MAKEKEY program for each of your programs in which you use the
+    registration key system. You would then be able to hard-code your
+    program's security code into your registration key gerneration
+    program, to eliminate the need of entering the security code every
+    time a user registers.
+
+    As an example of the use of the registration key system, say you
+    have written a program, and chosen 24805 as your security code. Now,
+    when the user registers your program, you would use the MAKEKEY key
+    program to generate a registration key which corresponds to the
+    exact spelling and capitalization of their name, and send this
+    registration key to them. The user would then enter their name,
+    exactly how it appeared on their registration form, along with the
+    registration key you have sent them, into either a configuration
+    file or configuration program. You would then be able to read this
+    information from the configuration file, from within your program.
+    You program would then determine the registration key which would
+    correspond to the user's name, and compare this registration key to
+    the key supplied by the user. If the values match, then your program
+    would run in registered mode, and if the values do not match, then
+    your program would run in unregistered mode. Keep in mind that
+    registration keys used in this system are always of type unsigned
+    long. Below is an example of part of a program which uses the
+    registration key system. This program will read the registration
+    information from the file REGISTER.KEY, taking the first line to be
+    the name of the registered user, and the second line to be the
+    user's registration key. Remember this program uses 24805 as its
+    security code - you will want to change this value in any programs
+    you write. This is also the value you will have to supply to the
+    MAKEKEY program, when generating keys for use with the program
+    below. The source code to this program is also listed in the file
+    USEKEY.C.
+
+        #include "bp.h"      // Include the registration key system header file
+
+        #include <stdio.h>                              // Other C header files
+        #include <string.h>
+
+        char registered=0;                         // 1 if registered, 0 if not
+        char registered_name[201];                   // Name of registered user
+
+        main()                                         // Main program function
+           {
+           FILE *fp;                      // File pointer for REGISTER.KEY file
+           unsigned long supplied_key;                  // Key supplied by user
+           unsigned long correct_key;               // Correct registration key
+
+           if((fp=fopen("REGISTER.KEY","r"))!=NULL)         // Try to open file
+              {                                                // If successful
+              fgets(registered_name,200,fp);             // read name from file
+              if(registered_name[strlen(registered_name)-1]=='\n')
+                 registered_name[strlen(registered_name)-1]='\0';
+
+              fscanf(fp,"%lu",&supplied_key);             // read key from file
+
+              fclose(fp);                                         // Close file
+
+              correct_key=bp(registered_name,24805);   // Calculate correct key
+
+              if(correct_key==supplied_key)  // Compare correct & supplied keys
+                 {                                     // If they are identical
+                 registered=1;      // Then switch program into registered mode
+                 }
+              }
+
+           if(registered==1)                              // If registered mode
+              {                             // Display registration information
+              printf("This program is registered to: %s\n",registered_name);
+              }
+           else if(registered==0)                  // If not in registered mode
+              {                             // Display unregistered information
+              printf("This program is UNREGISTERED!!!\n");
+              }
+           }
+
+    An alternative means of implementing the registration key system in
+    your programs is instead of sending the user a numerical value which
+    they enter into your program's configuration, to send them a
+    registration key file. This file, similar to that used in the above
+    program, would simply contain the user's name and registration key,
+    in any format you choose. Your "MAKEKEY" program would then generate
+    this file, and your distributed software would read this file, if
+    available.
+
+    I have decided to make it my policy NOT to release the source code
+    for this registration key algorithm. The reason for this is simply
+    for the protection of yourself and anyone else wishing to use this
+    algorithm in their programs. If the source code to this algorithm
+    became widely available, it would be easier (though still next to
+    impossible), for someone to be able to produce false registration
+    keys for your program. What I can tell you about the algorithm,
+    though, is that it uses several steps in the generation of the
+    registration key. Each of these steps use a completely different
+    approach, in order to provide greater security. Also, the security
+    code provided by your program is actually broken down into several
+    bit-fields, each of which is used to alter the output of a different
+    level of the overall algorithm. As a result, the most security is
+    obtained by using a security code which has both high and low bits
+    throughout the 16-bit value. As a general rule, try to choose
+    security codes above 10000. Also note that the registration string
+    can not exceed 200 characters in length.
+
+    In no event will I, Brian Pirie, be liable to you for any damages,
+    including any lost profits, lost savings, or other incidental or
+    consequential damages arising out of the use or inability to use
+    this software. While every effort has been made to make this
+    registration key system as secure as possible, please remember that
+    no such system is fool-proof, and that I can not take any
+    responsibility for any difficulties with this software.
+
+    I hope you enjoy this package and find it useful. If you are having
+    any difficulty with this package, I would be more than happy to
+    provide any assistance I can offer. If you would like to get in
+    touch with me for any reason at all, please feel more than free to
+    do so by any of the following means.
+
+    I can be contacted at -   FidoNet : 1:243/8
+                             InterNet : Brian.Pirie@f8.n243.z1.fidonet.org
+                           Data (BBS) : +1 613 526 4466
+                               Postal : 1416 - 2201 Riverside Dr.
+                                        Ottawa, Ontario
+                                        Canada
+                                        K1H 8K9
