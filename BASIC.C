@@ -310,12 +310,12 @@ void setup_archivers(void)
     strcpy(cfg.archive[8].archive_switches,"a -y ");
     strcpy(cfg.archive[8].unarchive_switches,"e -o+ ");
 }
-void check_reg(void)
+/*  void check_reg(void)
 {
     strtrim(cfg.registration);
     strtrim(cfg.bbs_name);
     reg_key=atol(cfg.registration);
-    correct_key=bp(cfg.bbs_name,KEYCODE);
+    correct_key=bp(cfg.bbs_name,KEYCODE);  
     if (correct_key==reg_key)
     {
         cfg.registered=1;
@@ -327,7 +327,20 @@ void check_reg(void)
         non_reg();
     }
     registered=cfg.registered;
-}
+}   */   /* MMH mod to remove registration is below*/
+
+  void check_reg(void)
+{
+    strtrim(cfg.registration);
+    strtrim(cfg.bbs_name);
+    reg_key=atol(cfg.registration);
+    correct_key=bp(cfg.bbs_name,KEYCODE);  
+    cfg.registered=1;
+    regd();
+    registered=cfg.registered;
+}   /*  MMH mod without registration */ 
+
+
 void initialize_nodes_config(void)
 {
     FILE *fp;
